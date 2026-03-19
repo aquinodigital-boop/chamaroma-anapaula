@@ -3,7 +3,8 @@ services:
     # URL publica tipica: https://chamaroma-anapaula-api.onrender.com
     name: chamaroma-anapaula-api
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    # pip atualizado evita build do pydantic-core a partir do fonte (precisaria Rust)
+    buildCommand: pip install --upgrade "pip>=24.0" setuptools wheel && pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: GEMINI_API_KEY

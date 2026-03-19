@@ -29,9 +29,14 @@ Se o Render ou o Vercel gerarem outro endereco, atualize `frontend/vercel.json` 
 ### Configuracao
 - **Name**: `chamaroma-anapaula-api` (assim a URL fica `https://chamaroma-anapaula-api.onrender.com`)
 - **Root Directory**: `backend`
-- **Runtime**: Python
-- **Build Command**: `pip install -r requirements.txt`
+- **Runtime**: Python **3.11.7** (use `backend/runtime.txt` ou env `PYTHON_VERSION=3.11.7`)
+- **Build Command** (copie exatamente):
+  ```bash
+  pip install --upgrade "pip>=24.0" setuptools wheel && pip install -r requirements.txt
+  ```
 - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+
+Se o build falhar com `pydantic-core` / `metadata-generation-failed`, quase sempre e pip antigo ou Python errado — confira os itens acima.
 
 ### Variaveis de ambiente
 | Key | Valor |
