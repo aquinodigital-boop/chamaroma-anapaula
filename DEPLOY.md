@@ -1,75 +1,95 @@
 # Chamaroma Studio — Deploy Render + Vercel
 
+Repositorio: [chamaroma-anapaula](https://github.com/aquinodigital-boop/chamaroma-anapaula)
+
+## URLs alinhadas (padrao)
+
+| Onde | Valor esperado |
+|------|----------------|
+| API Render | `https://chamaroma-anapaula-api.onrender.com` |
+| Site Vercel | `https://chamaroma-anapaula.vercel.app` (ou a URL que o Vercel mostrar) |
+
+Se o Render ou o Vercel gerarem outro endereco, atualize `frontend/vercel.json` e `ALLOWED_ORIGINS` no Render.
+
+---
+
+## Ordem recomendada
+
+1. **Backend no Render** (primeiro)
+2. **Frontend no Vercel** (depois)
+3. **CORS no Render** com a URL final do Vercel
+
+---
+
 ## 1. Backend no Render
 
-### Criar o servico
-1. Va em [render.com](https://render.com) -> **New Web Service**
-2. Conecte o repositorio Git
-3. Configure:
-   - **Name**: `chamaroma-studio-api`
-   - **Root Directory**: `backend`
-   - **Runtime**: Python
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+### Blueprint ou manual
+- [render.com](https://render.com) → **New** → **Blueprint** (se usar `render.yaml`) ou **Web Service**
+
+### Configuracao
+- **Name**: `chamaroma-anapaula-api` (assim a URL fica `https://chamaroma-anapaula-api.onrender.com`)
+- **Root Directory**: `backend`
+- **Runtime**: Python
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 
 ### Variaveis de ambiente
-| Key | Value |
+| Key | Valor |
 |-----|-------|
-| `GEMINI_API_KEY` | Sua chave da API Gemini |
-| `ALLOWED_ORIGINS` | `https://chamaroma-studio.vercel.app,http://localhost:5173` |
+| `GEMINI_API_KEY` | Sua chave Gemini |
 | `PYTHON_VERSION` | `3.11.7` |
+| `ALLOWED_ORIGINS` | Apos o passo do Vercel: `https://SUA-URL-VERCEL,http://localhost:5173` |
 
-Depois do deploy, anote a URL (exemplo: `https://chamaroma-studio-api.onrender.com`).
+No primeiro deploy pode usar so `http://localhost:5173` e depois editar no Render quando o Vercel estiver no ar.
+
+### Teste
+Abra: `https://chamaroma-anapaula-api.onrender.com/api/health`  
+(Se o nome do servico for outro, troque o subdominio.)
 
 ---
 
 ## 2. Frontend no Vercel
 
-### Criar o projeto
-1. Va em [vercel.com](https://vercel.com) -> **New Project**
-2. Conecte o repositorio Git
-3. Configure:
-   - **Root Directory**: `frontend`
-   - **Framework Preset**: Vite
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
+1. [vercel.com](https://vercel.com) → **Add New** → **Project** → importe o repo
+2. **Root Directory**: `frontend`
+3. **Framework**: Vite
+4. **Build**: `npm run build`
+5. **Output**: `dist`
 
-### Rewrites de API
-No arquivo `frontend/vercel.json`, mantenha:
+### Proxy da API
+O arquivo `frontend/vercel.json` ja aponta para:
 
-```json
-{
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://chamaroma-studio-api.onrender.com/api/:path*"
-    }
-  ]
-}
+`https://chamaroma-anapaula-api.onrender.com/api/:path*`
+
+Se sua URL do Render for diferente, edite esse `destination`, faca commit e push.
+
+---
+
+## 3. CORS no Render (obrigatorio para o front funcionar)
+
+No painel do servico → **Environment** → `ALLOWED_ORIGINS`:
+
+```
+https://chamaroma-anapaula.vercel.app,http://localhost:5173
 ```
 
----
+Use exatamente a URL que o Vercel mostra em **Domains** (pode incluir `www` ou preview; para producao use o dominio principal).
 
-## 3. Atualizar CORS no Render
-
-Apos o frontend estar publicado, confirme no Render:
-- `ALLOWED_ORIGINS` = `https://chamaroma-studio.vercel.app`
+Salve e aguarde o redeploy.
 
 ---
 
-## 4. Escopo da versao final
+## 4. Escopo da versao
 
-- Produto focado somente em CHAMAROMA
-- Categorias ativas: `velas` e `home_spray`
-- Diretrizes de `tinta`, `ferramentas` e outros segmentos removidas
+- CHAMAROMA only
+- Categorias: `velas` e `home_spray`
 
 ---
 
-## 5. Checklist pos-deploy
+## Checklist pos-deploy
 
-- [ ] Backend responde em `https://xxx.onrender.com/api/health`
-- [ ] Backend retorna 17 aromas em `https://xxx.onrender.com/api/aromas`
-- [ ] Frontend carrega em `https://xxx.vercel.app`
-- [ ] Aba Catalogo mostra os 17 aromas
-- [ ] Geracao de prompts funciona (imagem + Gemini key valida)
-- [ ] Geracao de imagens funciona
+- [ ] `GET .../api/health` OK no Render
+- [ ] `GET .../api/aromas` retorna os aromas
+- [ ] Site Vercel abre
+- [ ] Catálogo carrega (sem erro de CORS)
+- [ ] Geracao de prompts / imagens com `GEMINI_API_KEY` valida

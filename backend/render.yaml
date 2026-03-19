@@ -1,11 +1,14 @@
 services:
   - type: web
-    name: chamaroma-studio-api
+    # URL publica tipica: https://chamaroma-anapaula-api.onrender.com
+    name: chamaroma-anapaula-api
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: GEMINI_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
         sync: false
       - key: PYTHON_VERSION
         value: "3.11.7"

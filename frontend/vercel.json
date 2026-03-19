@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://chamaroma-studio-api.onrender.com/api/:path*"
+      "destination": "https://chamaroma-anapaula-api.onrender.com/api/:path*"
     }
   ],
   "headers": [
