@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕯️</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>Chamaroma Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'studio': {
+                900: '#0a0a0f', 800: '#12121a', 700: '#1a1a2e', 600: '#252540',
+                500: '#2d2d4a', 400: '#6c6c9a', 300: '#9d9dc0', 200: '#c4c4e0', 100: '#e8e8f5',
+              },
+              'accent': { DEFAULT: '#8b5cf6', light: '#a78bfa', dark: '#7c3aed' },
+              'flame': { DEFAULT: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
+            },
+            fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] },
+          },
+        },
+      }
+    </script>
+  </head>
+  <body class="bg-studio-900 text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
