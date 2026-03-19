@@ -21,22 +21,26 @@ Se o Render ou o Vercel gerarem outro endereco, atualize `frontend/vercel.json` 
 
 ---
 
-## 1. Backend no Render
+## 1. Backend no Render (recomendado: Docker)
 
-### Blueprint ou manual
-- [render.com](https://render.com) → **New** → **Blueprint** (se usar `render.yaml`) ou **Web Service**
+O ambiente **Native Python** do Render as vezes ignora o upgrade do `pip` (continua em 23.x) e ai o `pydantic-core` tenta compilar do fonte e falha. Por isso o repo usa **Docker** (`backend/Dockerfile`).
 
-### Configuracao
-- **Name**: `chamaroma-anapaula-api` (assim a URL fica `https://chamaroma-anapaula-api.onrender.com`)
-- **Root Directory**: `backend`
-- **Runtime**: Python **3.11.7** (use `backend/runtime.txt` ou env `PYTHON_VERSION=3.11.7`)
-- **Build Command** (copie exatamente):
-  ```bash
-  pip install --upgrade "pip>=24.0" setuptools wheel && pip install -r requirements.txt
-  ```
-- **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+### Opcao A — Blueprint
+1. [render.com](https://render.com) → **New** → **Blueprint**
+2. Conecte o repo `chamaroma-anapaula`
+3. Use o `render.yaml` na **raiz** do repositorio (Render detecta sozinho)
+4. Preencha `GEMINI_API_KEY` (e depois `ALLOWED_ORIGINS`)
 
-Se o build falhar com `pydantic-core` / `metadata-generation-failed`, quase sempre e pip antigo ou Python errado — confira os itens acima.
+### Opcao B — Web Service manual com Docker
+1. **New** → **Web Service** → mesmo repo
+2. **Root Directory**: deixe **vazio** (raiz) **ou** `backend` conforme abaixo:
+   - Se **Root Directory** = **vazio**: **Environment** = **Docker**, **Dockerfile Path** = `backend/Dockerfile`, **Docker Build Context** = `backend`
+   - Se **Root Directory** = **`backend`**: **Dockerfile Path** = `Dockerfile`, **Docker Build Context** = `.`
+3. **Name**: `chamaroma-anapaula-api`
+4. Nao use mais Build/Start de Python nativo — o `CMD` do Dockerfile ja sobe o `uvicorn`
+
+### Se voce ja tinha criado como Python nativo
+Em **Settings** → mude **Environment** para **Docker** e configure Dockerfile + context como acima, depois **Manual Deploy**.
 
 ### Variaveis de ambiente
 | Key | Valor |

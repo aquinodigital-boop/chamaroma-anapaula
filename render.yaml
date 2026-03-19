@@ -1,4 +1,4 @@
-# Caminhos abaixo sao relativos a RAIZ do repositorio (padrao Render Blueprint)
+# Blueprint na raiz do repo (Render encontra automaticamente)
 services:
   - type: web
     name: chamaroma-anapaula-api
